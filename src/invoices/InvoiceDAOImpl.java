@@ -14,7 +14,7 @@ import java.sql.*;
  */
 public class InvoiceDAOImpl implements InvoiceDAO {
     public boolean create(Invoice invoice){
-        String query = "INSERT INTO invoices(total_quantity, total_cost, amt_paid, change, user_id, status, datetime) "
+        String query = "INSERT INTO invoices(total_quantity, total_cost, amt_paid, `change`, user_id, status, `datetime`) "
                 + "VALUES(?, ?, ?, ?, ?, ?, ?)";
         
         try(Connection conn = DBConnection.getConnection();
@@ -88,8 +88,8 @@ public class InvoiceDAOImpl implements InvoiceDAO {
     
     public boolean update(int invoice_id, Invoice invoice){
         String query = "UPDATE invoices SET total_quantity = ?, "
-                + "total_cost = ?, amt_paid = ?, change = ?, "
-                + "status = ?, datetime = ? WHERE invoice_id = ?";
+                + "total_cost = ?, amt_paid = ?, `change` = ?, "
+                + "status = ?, `datetime` = ? WHERE invoice_id = ?";
         try(Connection conn = DBConnection.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(query)){
             pstmt.setInt(1, invoice.getTotal_quantity());
@@ -107,7 +107,6 @@ public class InvoiceDAOImpl implements InvoiceDAO {
             
             return false;
         }
-        
     }
     
     public ArrayList<Invoice> readInvoicesByUser(int user_id){
@@ -132,6 +131,31 @@ public class InvoiceDAOImpl implements InvoiceDAO {
         } catch (SQLException e){
             e.printStackTrace();
             return invoices;
+        }
+    }
+    
+    public Invoice read_last_insert(int user_id){
+        Invoice invoice = null;
+        String query = "SELECT * FROM invoices WHERE user_id = ? ORDER BY datetime DESC";
+        try(Connection conn = DBConnection.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query)){
+            pstmt.setInt(1, user_id);
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                invoice = new Invoice(rs.getInt("invoice_id"), 
+                        rs.getInt("total_quantity"), 
+                        rs.getDouble("total_cost"),
+                        rs.getDouble("amt_paid"),
+                        rs.getDouble("change"),
+                        rs.getInt("user_id"),
+                        rs.getString("status"),
+                        rs.getString("datetime")
+                );
+            }
+            return invoice;
+        } catch (SQLException e){
+            e.printStackTrace();
+            return invoice;
         }
     }
 }

@@ -28,12 +28,12 @@ public class AdminGUI extends javax.swing.JFrame {
     }
     
     public void login_admin(){
-        AdminLoginGUI loginGUI = new AdminLoginGUI(this, true);
+        AdminLoginGUI adminloginGUI = new AdminLoginGUI(this, true);
         
-        loginGUI.show(true);
+        adminloginGUI.show(true);
         
-        this.user = loginGUI.getUser();
-        userGreetingLBL.setText("Hi, " + loginGUI.getUser().getUsername() + "!");
+        this.user = adminloginGUI.getUser();
+        userGreetingLBL.setText("Hi, " + adminloginGUI.getUser().getUsername() + "!");
     }
     
     public void refreshTransactionsTBL(){
@@ -124,7 +124,7 @@ public class AdminGUI extends javax.swing.JFrame {
             model.addRow(new Object[]{
                 product.getProduct_id(), 
                 product.getName(),
-                product.getPrice(),
+                String.format("%.2f", product.getPrice()),
                 product.getStock()
             });
         }
@@ -134,6 +134,7 @@ public class AdminGUI extends javax.swing.JFrame {
     public void resetTransactionsTab(){
         refreshTransactionsTBL();
     }
+    
     public void resetProductsTab(){
         refreshProductsTBL();
         productsNameTF.setText("");
@@ -168,6 +169,8 @@ public class AdminGUI extends javax.swing.JFrame {
         productsDeleteMI = new javax.swing.JMenuItem();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
+        homeRefreshBTN = new javax.swing.JButton();
+        userGreetingLBL = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -207,8 +210,6 @@ public class AdminGUI extends javax.swing.JFrame {
         usersSaveBTN = new javax.swing.JButton();
         usersCancelBTN = new javax.swing.JButton();
         usersPasswordTF = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
-        userGreetingLBL = new javax.swing.JLabel();
 
         usersEditMI.setText("Edit");
         usersEditMI.addActionListener(new java.awt.event.ActionListener() {
@@ -243,16 +244,36 @@ public class AdminGUI extends javax.swing.JFrame {
         productsPUM.add(productsDeleteMI);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("FBE POS v1.0 - Administration");
+
+        homeRefreshBTN.setText("Refresh");
+        homeRefreshBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                homeRefreshBTNActionPerformed(evt);
+            }
+        });
+
+        userGreetingLBL.setText("Hi, xxxx!");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 959, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(userGreetingLBL)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 813, Short.MAX_VALUE)
+                .addComponent(homeRefreshBTN)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 675, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(homeRefreshBTN)
+                    .addComponent(userGreetingLBL))
+                .addContainerGap(646, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Home", jPanel1);
@@ -281,12 +302,6 @@ public class AdminGUI extends javax.swing.JFrame {
         transactionsSearchBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 transactionsSearchBTNActionPerformed(evt);
-            }
-        });
-
-        transactionsUsersCB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                transactionsUsersCBActionPerformed(evt);
             }
         });
 
@@ -396,16 +411,14 @@ public class AdminGUI extends javax.swing.JFrame {
                     .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jLabel11)
+                        .addGap(38, 38, 38)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addGap(38, 38, 38)
                                 .addComponent(productsSaveBTN)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(productsCancelBTN)
-                                .addGap(0, 72, Short.MAX_VALUE))
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addGap(43, 43, 43)
-                                .addComponent(productsStockTF))))
+                                .addGap(0, 67, Short.MAX_VALUE))
+                            .addComponent(productsStockTF)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel10)
@@ -505,12 +518,6 @@ public class AdminGUI extends javax.swing.JFrame {
         jScrollPane1.setViewportView(usersTBL);
 
         jLabel1.setText("Search user:");
-
-        usersSearchTF.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                usersSearchTFActionPerformed(evt);
-            }
-        });
 
         usersSearchBTN.setText("Search");
         usersSearchBTN.addActionListener(new java.awt.event.ActionListener() {
@@ -646,37 +653,15 @@ public class AdminGUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Users", jPanel4);
 
-        jButton1.setText("Refresh");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        userGreetingLBL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        userGreetingLBL.setText("Hi! Username");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jTabbedPane1)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(userGreetingLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(userGreetingLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1))
+            .addComponent(jTabbedPane1)
         );
 
         pack();
@@ -791,7 +776,17 @@ public class AdminGUI extends javax.swing.JFrame {
 
     private void usersTBLMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usersTBLMousePressed
        //TODO add your handling code here:
-       
+       if (evt.isPopupTrigger()) { 
+            int row = usersTBL.rowAtPoint(evt.getPoint());
+        
+            if (row >= 0) {
+                usersTBL.setRowSelectionInterval(row, row); 
+            }
+
+            usersPUM.show(usersTBL, evt.getX(), evt.getY()); 
+        } else {
+            System.out.println("Nothing happened!");
+        }
     }//GEN-LAST:event_usersTBLMousePressed
 
     private void usersEditMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usersEditMIActionPerformed
@@ -926,6 +921,17 @@ public class AdminGUI extends javax.swing.JFrame {
 
     private void productsTBLMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productsTBLMousePressed
         // TODO add your handling code here:
+        if (evt.isPopupTrigger()) { 
+            int row = productsTBL.rowAtPoint(evt.getPoint());
+        
+            if (row >= 0) {
+                productsTBL.setRowSelectionInterval(row, row); 
+            }
+
+            productsPUM.show(productsTBL, evt.getX(), evt.getY()); 
+        } else {
+            System.out.println("Nothing happened!");
+        }
     }//GEN-LAST:event_productsTBLMousePressed
 
     private void productsTBLMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productsTBLMouseReleased
@@ -994,6 +1000,11 @@ public class AdminGUI extends javax.swing.JFrame {
         refreshTables();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void homeRefreshBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeRefreshBTNActionPerformed
+        // TODO add your handling code here:
+        refreshTables();
+    }//GEN-LAST:event_homeRefreshBTNActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1030,7 +1041,7 @@ public class AdminGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton homeRefreshBTN;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

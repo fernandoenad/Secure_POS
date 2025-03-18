@@ -8,9 +8,9 @@ import java.sql.*;
 
 public class DBConnection {
      // Database URL, Username, and Password
-    private static final String URL = "jdbc:mysql://192.168.16.205:3306/fenad_pos_db";      
-    private static final String USER = "fenad";      
-    private static final String PASSWORD = "fenad";  
+    private static final String URL = "jdbc:mysql://localhost:3306/fenad";      
+    private static final String USER = "root";      
+    private static final String PASSWORD = "";  
 
     // Method to establish a connection to the database
     public static Connection getConnection() {
