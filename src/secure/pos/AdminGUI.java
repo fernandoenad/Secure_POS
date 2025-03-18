@@ -4,7 +4,6 @@
  */
 package secure.pos;
 
-import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import products.*;
@@ -25,6 +24,16 @@ public class AdminGUI extends javax.swing.JFrame {
     public AdminGUI() {
         initComponents();
         refreshTables();
+        login_admin();
+    }
+    
+    public void login_admin(){
+        AdminLoginGUI loginGUI = new AdminLoginGUI(this, true);
+        
+        loginGUI.show(true);
+        
+        this.user = loginGUI.getUser();
+        userGreetingLBL.setText("Hi, " + loginGUI.getUser().getUsername() + "!");
     }
     
     public void refreshTransactionsTBL(){
@@ -38,7 +47,7 @@ public class AdminGUI extends javax.swing.JFrame {
                 transaction.getTransaction_id(), 
                 product.getName(),
                 transaction.getQuantity(),
-                String.format("%.2f",  transaction.getTotal_price()),
+                String.format("%.2f", transaction.getTotal_price()),
                 user.getUsername(),
                 transaction.getDate()
             });
@@ -125,7 +134,6 @@ public class AdminGUI extends javax.swing.JFrame {
     public void resetTransactionsTab(){
         refreshTransactionsTBL();
     }
-    
     public void resetProductsTab(){
         refreshProductsTBL();
         productsNameTF.setText("");
@@ -139,7 +147,6 @@ public class AdminGUI extends javax.swing.JFrame {
         usersPasswordTF.setText("");
         usersSaveBTN.setText("Save");
     }
-    
     
 
     /**
@@ -160,7 +167,6 @@ public class AdminGUI extends javax.swing.JFrame {
         productsDeleteMI = new javax.swing.JMenuItem();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        homeRefreshBTN = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -200,6 +206,8 @@ public class AdminGUI extends javax.swing.JFrame {
         usersSaveBTN = new javax.swing.JButton();
         usersCancelBTN = new javax.swing.JButton();
         usersPasswordTF = new javax.swing.JPasswordField();
+        jButton1 = new javax.swing.JButton();
+        userGreetingLBL = new javax.swing.JLabel();
 
         usersEditMI.setText("Edit");
         usersEditMI.addActionListener(new java.awt.event.ActionListener() {
@@ -235,28 +243,15 @@ public class AdminGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        homeRefreshBTN.setText("Refresh");
-        homeRefreshBTN.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                homeRefreshBTNActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(878, Short.MAX_VALUE)
-                .addComponent(homeRefreshBTN)
-                .addContainerGap())
+            .addGap(0, 959, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(homeRefreshBTN)
-                .addContainerGap(646, Short.MAX_VALUE))
+            .addGap(0, 675, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Home", jPanel1);
@@ -285,6 +280,12 @@ public class AdminGUI extends javax.swing.JFrame {
         transactionsSearchBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 transactionsSearchBTNActionPerformed(evt);
+            }
+        });
+
+        transactionsUsersCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                transactionsUsersCBActionPerformed(evt);
             }
         });
 
@@ -342,6 +343,9 @@ public class AdminGUI extends javax.swing.JFrame {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 productsTBLMousePressed(evt);
             }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                productsTBLMouseReleased(evt);
+            }
         });
         jScrollPane2.setViewportView(productsTBL);
 
@@ -375,6 +379,11 @@ public class AdminGUI extends javax.swing.JFrame {
         });
 
         productsCancelBTN.setText("Cancel");
+        productsCancelBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                productsCancelBTNActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -386,14 +395,16 @@ public class AdminGUI extends javax.swing.JFrame {
                     .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jLabel11)
-                        .addGap(38, 38, 38)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGap(38, 38, 38)
                                 .addComponent(productsSaveBTN)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(productsCancelBTN)
-                                .addGap(0, 67, Short.MAX_VALUE))
-                            .addComponent(productsStockTF)))
+                                .addGap(0, 72, Short.MAX_VALUE))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGap(43, 43, 43)
+                                .addComponent(productsStockTF))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel10)
@@ -493,6 +504,12 @@ public class AdminGUI extends javax.swing.JFrame {
         jScrollPane1.setViewportView(usersTBL);
 
         jLabel1.setText("Search user:");
+
+        usersSearchTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                usersSearchTFActionPerformed(evt);
+            }
+        });
 
         usersSearchBTN.setText("Search");
         usersSearchBTN.addActionListener(new java.awt.event.ActionListener() {
@@ -628,15 +645,37 @@ public class AdminGUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Users", jPanel4);
 
+        jButton1.setText("Refresh");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        userGreetingLBL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        userGreetingLBL.setText("Hi! Username");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jTabbedPane1)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(userGreetingLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(userGreetingLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1))
         );
 
         pack();
@@ -689,6 +728,7 @@ public class AdminGUI extends javax.swing.JFrame {
         String username = usersUsernameTF.getText();
         String password = usersPasswordTF.getText();
         String role = usersRoleCashierRB.isSelected() ? "Cashier" : "Admin";
+        System.out.println(role);
         
         if(username.equals("") || password.equals("") || role.equals("")){
             JOptionPane.showMessageDialog(null, 
@@ -745,23 +785,12 @@ public class AdminGUI extends javax.swing.JFrame {
         }
         
         resetUsersTab();
+        resetTransactionsTab();
     }//GEN-LAST:event_usersSaveBTNActionPerformed
 
     private void usersTBLMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usersTBLMousePressed
-        // TODO add your handling code here:
-        // Use MouseRelease event for Windows OS, MousePressed is only for MAC
-        // for Right-Click options
-        if (evt.isPopupTrigger()) { 
-            int row = usersTBL.rowAtPoint(evt.getPoint());
-        
-            if (row >= 0) {
-                usersTBL.setRowSelectionInterval(row, row); 
-            }
-
-            usersPUM.show(usersTBL, evt.getX(), evt.getY()); 
-        } else {
-            System.out.println("Nothing happened!");
-        }
+       //TODO add your handling code here:
+       
     }//GEN-LAST:event_usersTBLMousePressed
 
     private void usersEditMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usersEditMIActionPerformed
@@ -810,6 +839,9 @@ public class AdminGUI extends javax.swing.JFrame {
 
     private void usersTBLMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usersTBLMouseReleased
         // TODO add your handling code here:
+         // TODO add your handling code here:
+        // Use MouseRelease event for Windows OS, MousePressed is only for MAC
+        // for Right-Click options
         if (evt.isPopupTrigger()) { 
             int row = usersTBL.rowAtPoint(evt.getPoint());
         
@@ -826,26 +858,26 @@ public class AdminGUI extends javax.swing.JFrame {
     private void productsSaveBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productsSaveBTNActionPerformed
         // TODO add your handling code here:
         String name = productsNameTF.getText();
-        Double price = Double.parseDouble(productsPriceTF.getText());
-        int stock = Integer.parseInt(productsStockTF.getText());
-        
-        if(name.equals("") || price <= 0 || stock <= 0){
+       double price = Double.parseDouble(productsPriceTF.getText());
+       int stock = Integer.parseInt(productsStockTF.getText());
+       
+        if(name.equals("") || price == 0 || stock == 0){
             JOptionPane.showMessageDialog(null, 
-                    "All fields are required!", 
-                    "Message", 
-                    JOptionPane.ERROR_MESSAGE);
+                        "All fields are required!", 
+                        "Message", 
+                        JOptionPane.ERROR_MESSAGE);
             
             return;
         }
         
-        if(productsSaveBTN.getText().equals("Save")){
-            int option = JOptionPane.showConfirmDialog(null, 
-                    "This will save the entries currently on the form. Are you sure?", 
-                    "Confirmation", 
-                    JOptionPane.OK_CANCEL_OPTION);
+            if(productsSaveBTN.getText().equals("Save")){
+                int option = JOptionPane.showConfirmDialog(null, 
+                        "This will save the entries currently on the form. Are you sure?", 
+                        "Confirmation",
+                        JOptionPane.OK_CANCEL_OPTION);
 
-            if(option == JOptionPane.OK_OPTION){
-                Product product = new Product(0, name, price, stock);
+                if(option == JOptionPane.OK_OPTION){
+                    Product product = new Product(0, name, price, stock);
                     if(productDAOImpl.create(product) == true){
                         JOptionPane.showMessageDialog(null, 
                                 "New product has been saved!", 
@@ -857,10 +889,9 @@ public class AdminGUI extends javax.swing.JFrame {
                                 "Message", 
                                 JOptionPane.ERROR_MESSAGE);
                     }
-            }
-        } else {
-            // if(productsSaveBTN.getText().equals("Save")){ // Save code 
-            int option = JOptionPane.showConfirmDialog(null, 
+                }
+            } else{
+                int option = JOptionPane.showConfirmDialog(null, 
                     "This will update the entries currently on the form. Are you sure?", 
                     "Confirmation",
                     JOptionPane.OK_CANCEL_OPTION);
@@ -869,7 +900,7 @@ public class AdminGUI extends javax.swing.JFrame {
                 this.product.setName(name);
                 this.product.setPrice(price);
                 this.product.setStock(stock);
-
+                
                 if(productDAOImpl.update(this.product.getProduct_id(), this.product) == true){
                     JOptionPane.showMessageDialog(null, 
                             "Product has been updated!", 
@@ -883,11 +914,20 @@ public class AdminGUI extends javax.swing.JFrame {
                 }
             }
         }
-        
-        resetProductsTab();
+
+            resetProductsTab();
     }//GEN-LAST:event_productsSaveBTNActionPerformed
 
+    private void productsCancelBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productsCancelBTNActionPerformed
+        // TODO add your handling code here:
+        resetProductsTab();
+    }//GEN-LAST:event_productsCancelBTNActionPerformed
+
     private void productsTBLMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productsTBLMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_productsTBLMousePressed
+
+    private void productsTBLMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productsTBLMouseReleased
         // TODO add your handling code here:
         if (evt.isPopupTrigger()) { 
             int row = productsTBL.rowAtPoint(evt.getPoint());
@@ -900,7 +940,19 @@ public class AdminGUI extends javax.swing.JFrame {
         } else {
             System.out.println("Nothing happened!");
         }
-    }//GEN-LAST:event_productsTBLMousePressed
+    }//GEN-LAST:event_productsTBLMouseReleased
+
+    private void productsEditMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productsEditMIActionPerformed
+        // TODO add your handling code here:
+        productsSaveBTN.setText("Update");
+        DefaultTableModel model = (DefaultTableModel) productsTBL.getModel();
+        int product_id = Integer.parseInt(model.getValueAt(productsTBL.getSelectedRow(), 0).toString());
+        this.product = productDAOImpl.read_one(product_id);
+        
+        productsNameTF.setText(product.getName());
+        productsPriceTF.setText(String.format("%.2f", product.getPrice()));
+        productsStockTF.setText(product.getStock() + "");
+    }//GEN-LAST:event_productsEditMIActionPerformed
 
     private void productsDeleteMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productsDeleteMIActionPerformed
         // TODO add your handling code here:
@@ -929,22 +981,17 @@ public class AdminGUI extends javax.swing.JFrame {
         resetProductsTab();
     }//GEN-LAST:event_productsDeleteMIActionPerformed
 
-    private void productsEditMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productsEditMIActionPerformed
-        // TODO add your handling code here:
-        productsSaveBTN.setText("Update");
-        DefaultTableModel model = (DefaultTableModel) productsTBL.getModel();
-        int product_id = Integer.parseInt(model.getValueAt(productsTBL.getSelectedRow(), 0).toString());
-        this.product = productDAOImpl.read_one(product_id);
-        
-        productsNameTF.setText(product.getName());
-        productsPriceTF.setText(String.format("%.2f", product.getPrice()));
-        productsStockTF.setText(product.getStock()+"");
-    }//GEN-LAST:event_productsEditMIActionPerformed
+    private void usersSearchTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usersSearchTFActionPerformed
+    }//GEN-LAST:event_usersSearchTFActionPerformed
 
-    private void homeRefreshBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeRefreshBTNActionPerformed
+    private void transactionsUsersCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transactionsUsersCBActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_transactionsUsersCBActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         refreshTables();
-    }//GEN-LAST:event_homeRefreshBTNActionPerformed
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -982,7 +1029,7 @@ public class AdminGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton homeRefreshBTN;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1018,6 +1065,7 @@ public class AdminGUI extends javax.swing.JFrame {
     private javax.swing.JButton transactionsSearchBTN;
     private javax.swing.JTable transactionsTBL;
     private javax.swing.JComboBox<String> transactionsUsersCB;
+    private javax.swing.JLabel userGreetingLBL;
     private javax.swing.JButton usersCancelBTN;
     private javax.swing.JMenuItem usersDeleteMI;
     private javax.swing.JMenuItem usersEditMI;

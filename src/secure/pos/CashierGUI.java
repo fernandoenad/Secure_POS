@@ -4,19 +4,63 @@
  */
 package secure.pos;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import products.Product;
+import products.ProductDAOImpl;
+import transactions.Transaction;
+import transactions.TransactionDAOImpl;
+import users.User;
+
 /**
  *
  * @author fernandoenad
  */
 public class CashierGUI extends javax.swing.JFrame {
-
+    private ProductDAOImpl productImpl = new ProductDAOImpl();
+    private User logged_user = null;
+    private Product product = null;
+    private double total_price;
+    private double change;
+    private double amount_paid;
+    TransactionDAOImpl transactionImpl = new TransactionDAOImpl();
     /**
      * Creates new form CashierGUI
      */
     public CashierGUI() {
         initComponents();
+        login_cashier();
     }
-
+    
+    public void login_cashier(){
+        CashierLoginGUI loginGUI = new CashierLoginGUI(this, true);
+        
+        loginGUI.show(true);
+        
+        this.logged_user = loginGUI.getUser();
+        user_greetingLBL.setText("Hi, " + loginGUI.getUser().getUsername() + "!");
+        
+        barcodeTF.grabFocus();
+    }
+    
+    public void new_transaction(){
+        DefaultTableModel model = (DefaultTableModel) posTBL.getModel();
+        model.setRowCount(0);
+        
+        totalLBL.setText("0.00");
+        amount_paidTF.setText("0.00");
+        changeLBL.setText("0.00");
+        
+        barcodeTF.grabFocus();
+    }
+    /*public void logged_user(){
+        this.logged_user = new User(3, "Nelson", "herrera", "Cashier");
+        
+        user_greetingLBL.setText("Cashier: " + this.logged_user.getUsername());
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -27,21 +71,22 @@ public class CashierGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        posTBL = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        barcodeTF = new javax.swing.JTextField();
+        searchBTN = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        totalLBL = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        amount_paidTF = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
+        changeLBL = new javax.swing.JLabel();
+        user_greetingLBL = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        posTBL.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -57,38 +102,55 @@ public class CashierGUI extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(posTBL);
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 25)); // NOI18N
         jLabel1.setText("Scan Barcode:");
 
-        jTextField1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        barcodeTF.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        barcodeTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                barcodeTFActionPerformed(evt);
+            }
+        });
 
-        jButton1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jButton1.setText("Search Product");
+        searchBTN.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        searchBTN.setText("Search Product");
+        searchBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchBTNActionPerformed(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Transaction Details"));
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel2.setText("Total:");
 
-        jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel3.setText("0.00");
+        totalLBL.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        totalLBL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        totalLBL.setText("0.00");
 
         jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel4.setText("Change:");
 
-        jTextField2.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jTextField2.setText("0.00");
+        amount_paidTF.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        amount_paidTF.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        amount_paidTF.setText("0.00");
+        amount_paidTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                amount_paidTFActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel5.setText("Amount Paid:");
 
-        jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel6.setText("0.00");
+        changeLBL.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        changeLBL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        changeLBL.setText("0.00");
+
+        user_greetingLBL.setText("Cashier: XXXXXXXXXXXXXXXXXXXXXXXX");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -97,20 +159,21 @@ public class CashierGUI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(amount_paidTF, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(totalLBL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())))
+                                .addGap(0, 121, Short.MAX_VALUE))
+                            .addComponent(changeLBL, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(user_greetingLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -118,16 +181,18 @@ public class CashierGUI extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
+                .addComponent(totalLBL)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(amount_paidTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel6)
-                .addContainerGap(124, Short.MAX_VALUE))
+                .addComponent(changeLBL)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
+                .addComponent(user_greetingLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -141,10 +206,10 @@ public class CashierGUI extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 432, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(barcodeTF, javax.swing.GroupLayout.PREFERRED_SIZE, 432, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                    .addComponent(searchBTN, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -154,8 +219,8 @@ public class CashierGUI extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(barcodeTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchBTN))
                 .addGap(13, 13, 13)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -164,7 +229,100 @@ public class CashierGUI extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void barcodeTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_barcodeTFActionPerformed
+        // TODO add your handling code here:
+        int product_id = Integer.parseInt(barcodeTF.getText());
+        
+        this.product = productImpl.read_one(product_id);
+        
+        if(product == null){
+            JOptionPane.showMessageDialog(null, 
+                    "Product not found!", 
+                    "Message", JOptionPane.ERROR_MESSAGE);
+        }else{
+             DefaultTableModel model = (DefaultTableModel) posTBL.getModel();
+             model.setRowCount(0);
+        
+            model.addRow(new Object[]{
+                this.product.getProduct_id(), 
+                this.product.getName(),
+                1,
+                String.format("%.2f", this.product.getPrice())
+            });
+            
+            barcodeTF.setText("");
+            amount_paidTF.grabFocus();
+            amount_paidTF.setText("");
+            
+            this.total_price += this.product.getPrice();
+            totalLBL.setText(String.format("%.2f", this.total_price));
+        }
+    }//GEN-LAST:event_barcodeTFActionPerformed
+
+    private void searchBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBTNActionPerformed
+        // TODO add your handling code here:
+        int product_id = Integer.parseInt(barcodeTF.getText());
+        
+        this.product = productImpl.read_one(product_id);
+        
+        if(product == null){
+            JOptionPane.showMessageDialog(null, 
+                    "Product not found!", 
+                    "Message", JOptionPane.ERROR_MESSAGE);
+        }else{
+             DefaultTableModel model = (DefaultTableModel) posTBL.getModel();
+             model.setRowCount(0);
+        
+            model.addRow(new Object[]{
+                this.product.getProduct_id(), 
+                this.product.getName(),
+                1,
+                String.format("%.2f", this.product.getPrice())
+            });
+            
+            barcodeTF.setText("");
+            barcodeTF.grabFocus();
+            amount_paidTF.setText("");
+            
+            this.total_price += this.product.getPrice();
+            totalLBL.setText(String.format("%.2f", this.total_price));
+        }
+    }//GEN-LAST:event_searchBTNActionPerformed
+
+    private void amount_paidTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_amount_paidTFActionPerformed
+        // TODO add your handling code here:
+        double total_price = Double.parseDouble(totalLBL.getText());
+        double amount_paid = Double.parseDouble(amount_paidTF.getText());
+        
+        if(total_price <= amount_paid ){
+            LocalDateTime datetime = LocalDateTime.now();
+            Transaction transaction = new Transaction(0, this.product.getProduct_id(),1 ,
+                    this.product.getPrice(), this.logged_user.getUser_id(), datetime + "");
+            
+            if(this.transactionImpl.create(transaction) == true){
+                changeLBL.setText(String.format("%.2f", amount_paid - total_price));
+                JOptionPane.showMessageDialog(null,
+                        "Transaction added", 
+                        "Message", JOptionPane.INFORMATION_MESSAGE);
+            }else{
+                changeLBL.setText(String.format("%.2f",amount_paid - total_price));
+                JOptionPane.showMessageDialog(null,
+                        "Transaction failed", 
+                        "Message", JOptionPane.INFORMATION_MESSAGE);
+            }
+            
+            new_transaction();
+            
+        }else{
+            JOptionPane.showMessageDialog(null,
+                    "Insufficient payments!", 
+                    "Warning", 
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_amount_paidTFActionPerformed
 
     /**
      * @param args the command line arguments
@@ -202,17 +360,18 @@ public class CashierGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JTextField amount_paidTF;
+    private javax.swing.JTextField barcodeTF;
+    private javax.swing.JLabel changeLBL;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTable posTBL;
+    private javax.swing.JButton searchBTN;
+    private javax.swing.JLabel totalLBL;
+    private javax.swing.JLabel user_greetingLBL;
     // End of variables declaration//GEN-END:variables
 }
