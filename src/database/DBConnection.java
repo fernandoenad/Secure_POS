@@ -8,9 +8,9 @@ import java.sql.*;
 
 public class DBConnection {
      // Database URL, Username, and Password
-    private static final String URL = "jdbc:mysql://localhost:3306/pos_db";      
-    private static final String USER = "root";      
-    private static final String PASSWORD = "";  
+    private static final String URL = "jdbc:mysql://192.168.16.205:3306/fenad_pos_db";      
+    private static final String USER = "fenad";      
+    private static final String PASSWORD = "fenad";  
 
     // Method to establish a connection to the database
     public static Connection getConnection() {
@@ -20,4 +20,17 @@ public class DBConnection {
             return null;
         }
     }
+    
+    /*
+    public static void main(String args[]){
+        Connection conn = DBConnection.getConnection();
+        
+        if(conn == null){
+            System.out.println("Error was encountered!");
+        } else {
+            System.out.println("Connection was successful!");
+        }
+    
+    }
+    */
 }
