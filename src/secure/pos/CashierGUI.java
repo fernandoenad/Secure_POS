@@ -35,12 +35,13 @@ public class CashierGUI extends javax.swing.JFrame {
     }
     
     public void login_cashier(){
-        CashierLoginGUI loginGUI = new CashierLoginGUI(this, true);
+        //CashierLoginGUI loginGUI = new CashierLoginGUI(this, true);
         
-        loginGUI.show(true);
+        //loginGUI.show(true);
         
-        this.logged_user = loginGUI.getUser();
-        user_greetingLBL.setText("Hi, " + loginGUI.getUser().getUsername() + "!");
+        //this.logged_user = loginGUI.getUser();
+        this.logged_user = new User(3,"fenad2", "fenad2", "Cashier");
+        user_greetingLBL.setText("Hi, " + this.logged_user.getUsername() + "!");
         
         barcodeTF.grabFocus();
     }

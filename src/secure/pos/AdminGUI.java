@@ -139,6 +139,7 @@ public class AdminGUI extends javax.swing.JFrame {
         productsNameTF.setText("");
         productsPriceTF.setText("");
         productsStockTF.setText("");
+        productsSaveBTN.setText("Save");
     }
     
     public void resetUsersTab(){
@@ -915,7 +916,7 @@ public class AdminGUI extends javax.swing.JFrame {
             }
         }
 
-            resetProductsTab();
+        resetProductsTab();
     }//GEN-LAST:event_productsSaveBTNActionPerformed
 
     private void productsCancelBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productsCancelBTNActionPerformed
