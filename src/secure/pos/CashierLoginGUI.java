@@ -26,6 +26,35 @@ public class CashierLoginGUI extends javax.swing.JDialog {
     public User getUser(){
         return this.user;
     }
+    
+    public void login(){
+        String username = usernameTF.getText();
+        String password = passwordTF.getText();
+        
+        String query = "SELECT * FROM users WHERE username = ? AND password = ? AND role = ?";
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            pstmt.setString(3, "Cashier");
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                user = new User(rs.getInt("user_id"), rs.getString("username"), 
+                        rs.getString("password"), rs.getString("role"));
+            } 
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        if(this.user == null){
+            passwordTF.setText("");
+            usernameTF.setText("");
+            JOptionPane.showMessageDialog(null, "Invalid login credentials!", "Message", JOptionPane.ERROR_MESSAGE);
+        }else{
+            this.dispose();
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -68,6 +97,12 @@ public class CashierLoginGUI extends javax.swing.JDialog {
         showPasswordCB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showPasswordCBActionPerformed(evt);
+            }
+        });
+
+        passwordTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passwordTFActionPerformed(evt);
             }
         });
 
@@ -132,32 +167,7 @@ public class CashierLoginGUI extends javax.swing.JDialog {
 
     private void loginBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBTNActionPerformed
         // TODO add your handling code here:
-        String username = usernameTF.getText();
-        String password = passwordTF.getText();
-        
-        String query = "SELECT * FROM users WHERE username = ? AND password = ? AND role = ?";
-        try (Connection conn = DBConnection.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-            pstmt.setString(3, "Admin");
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                user = new User(rs.getInt("user_id"), rs.getString("username"), 
-                        rs.getString("password"), rs.getString("role"));
-            } 
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        
-        if(this.user == null){
-            passwordTF.setText("");
-            usernameTF.setText("");
-            JOptionPane.showMessageDialog(null, "Invalid login credentials!", "Message", JOptionPane.ERROR_MESSAGE);
-        }else{
-            this.dispose();
-        }
+        login();
     }//GEN-LAST:event_loginBTNActionPerformed
 
     private void showPasswordCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPasswordCBActionPerformed
@@ -168,6 +178,11 @@ public class CashierLoginGUI extends javax.swing.JDialog {
             passwordTF.setEchoChar('*');
         }
     }//GEN-LAST:event_showPasswordCBActionPerformed
+
+    private void passwordTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTFActionPerformed
+        // TODO add your handling code here:
+        login();
+    }//GEN-LAST:event_passwordTFActionPerformed
 
     /**
      * @param args the command line arguments

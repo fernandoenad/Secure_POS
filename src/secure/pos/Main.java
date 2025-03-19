@@ -28,23 +28,66 @@ public class Main extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        cashierBTN = new javax.swing.JButton();
+        administratorBTN = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("FBE POS v1.0");
+
+        cashierBTN.setFont(new java.awt.Font("Helvetica Neue", 0, 36)); // NOI18N
+        cashierBTN.setText("Cashier");
+        cashierBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cashierBTNActionPerformed(evt);
+            }
+        });
+
+        administratorBTN.setFont(new java.awt.Font("Helvetica Neue", 0, 36)); // NOI18N
+        administratorBTN.setText("Administrator");
+        administratorBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                administratorBTNActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 907, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(85, 85, 85)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(administratorBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cashierBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 596, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(80, 80, 80)
+                .addComponent(cashierBTN)
+                .addGap(18, 18, 18)
+                .addComponent(administratorBTN)
+                .addContainerGap(97, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cashierBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cashierBTNActionPerformed
+        // TODO add your handling code here:
+        CashierGUI cashierGUI = new CashierGUI();
+        cashierGUI.show(true);
+        this.dispose();
+    }//GEN-LAST:event_cashierBTNActionPerformed
+
+    private void administratorBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_administratorBTNActionPerformed
+        // TODO add your handling code here:
+        AdminGUI adminGUI = new AdminGUI();
+        adminGUI.show(true);
+        this.dispose();
+    }//GEN-LAST:event_administratorBTNActionPerformed
 
     /**
      * @param args the command line arguments
@@ -82,5 +125,7 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton administratorBTN;
+    private javax.swing.JButton cashierBTN;
     // End of variables declaration//GEN-END:variables
 }

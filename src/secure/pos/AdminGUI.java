@@ -4,6 +4,8 @@
  */
 package secure.pos;
 
+import invoices.Invoice;
+import invoices.InvoiceDAOImpl;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import products.*;
@@ -15,7 +17,7 @@ import transactions.*;
  * @author fernandoenad
  */
 public class AdminGUI extends javax.swing.JFrame {
-    private TransactionDAOImpl transactionDAOImpl = new TransactionDAOImpl();
+    private InvoiceDAOImpl invoiceDAOImpl = new InvoiceDAOImpl();
     private ProductDAOImpl productDAOImpl = new ProductDAOImpl();
     private UserDAOImpl userDAOImpl = new UserDAOImpl();
     private User user = null;
@@ -36,31 +38,31 @@ public class AdminGUI extends javax.swing.JFrame {
         userGreetingLBL.setText("Hi, " + adminloginGUI.getUser().getUsername() + "!");
     }
     
-    public void refreshTransactionsTBL(){
-        DefaultTableModel model = (DefaultTableModel) transactionsTBL.getModel();
+    public void refreshinvoicesTBL(){
+        DefaultTableModel model = (DefaultTableModel) invoicesTBL.getModel();
         model.setRowCount(0);
         
-        for(Transaction transaction : transactionDAOImpl.read_all()){
-            Product product = productDAOImpl.read_one(transaction.getProduct_id());
-            User user = userDAOImpl.read_one(transaction.getUser_id());
+        for(Invoice invoice : invoiceDAOImpl.read_all()){
+            User user = userDAOImpl.read_one(invoice.getUser_id());
             model.addRow(new Object[]{
-                transaction.getTransaction_id(), 
-                product.getName(),
-                transaction.getQuantity(),
-                String.format("%.2f", transaction.getTotal_price()),
+                invoice.getInvoice_id(),
+                invoice.getTotal_quantity(),
+                String.format("%.2f", invoice.getTotal_cost()),
+                String.format("%.2f", invoice.getAmt_paid()),
+                String.format("%.2f", invoice.getChange()),
                 user.getUsername(),
-                transaction.getDate()
+                invoice.getStatus(),
+                invoice.getDatetime()
             });
         }
-        
         refreshTransactionsUserCB();
     }
     
     public void refreshTransactionsUserCB(){
-        transactionsUsersCB.removeAllItems();
+        invoicesUsersCB.removeAllItems();
         
         for(User user : userDAOImpl.search("Cashier")){
-            transactionsUsersCB.addItem(user.getUsername());
+            invoicesUsersCB.addItem(user.getUsername());
         }
     }
     
@@ -95,23 +97,26 @@ public class AdminGUI extends javax.swing.JFrame {
     }
     
     public void refreshTables(){
-        refreshTransactionsTBL();
+        refreshinvoicesTBL();
         refreshProductsTBL();
         refreshUsersTBL();
     }
     
     public void searchTransactionsTable(int user_id){
-        DefaultTableModel model = (DefaultTableModel) transactionsTBL.getModel();
+        DefaultTableModel model = (DefaultTableModel) invoicesTBL.getModel();
         model.setRowCount(0);
         
-        for(Transaction transaction : transactionDAOImpl.readTransactionsByUser(user_id)){
+        for(Invoice invoice : invoiceDAOImpl.read_all()){
+            User user = userDAOImpl.read_one(invoice.getUser_id());
             model.addRow(new Object[]{
-                transaction.getTransaction_id(), 
-                productDAOImpl.read_one(transaction.getProduct_id()).getName(),
-                transaction.getQuantity(),
-                transaction.getTotal_price(),
-                userDAOImpl.read_one(transaction.getUser_id()).getUsername(),
-                transaction.getDate()
+                invoice.getInvoice_id(),
+                invoice.getTotal_quantity(),
+                String.format("%.2f", invoice.getTotal_cost()),
+                String.format("%.2f", invoice.getAmt_paid()),
+                String.format("%.2f", invoice.getChange()),
+                user.getUsername(),
+                invoice.getStatus(),
+                invoice.getDatetime()
             });
         }
     }
@@ -132,7 +137,7 @@ public class AdminGUI extends javax.swing.JFrame {
     }
     
     public void resetTransactionsTab(){
-        refreshTransactionsTBL();
+        refreshinvoicesTBL();
     }
     
     public void resetProductsTab(){
@@ -174,9 +179,9 @@ public class AdminGUI extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        transactionsTBL = new javax.swing.JTable();
-        transactionsSearchBTN = new javax.swing.JButton();
-        transactionsUsersCB = new javax.swing.JComboBox<>();
+        invoicesTBL = new javax.swing.JTable();
+        invoicesSearchBTN = new javax.swing.JButton();
+        invoicesUsersCB = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         productsSearchTF = new javax.swing.JTextField();
@@ -244,7 +249,7 @@ public class AdminGUI extends javax.swing.JFrame {
         productsPUM.add(productsDeleteMI);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("FBE POS v1.0 - Administration");
+        setTitle("FBE POS v1.0 | Administration");
 
         homeRefreshBTN.setText("Refresh");
         homeRefreshBTN.addActionListener(new java.awt.event.ActionListener() {
@@ -280,28 +285,28 @@ public class AdminGUI extends javax.swing.JFrame {
 
         jLabel3.setText("Search by user:");
 
-        transactionsTBL.setModel(new javax.swing.table.DefaultTableModel(
+        invoicesTBL.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Transaction ID", "Product", "Quantity", "Total Price", "User", "Date"
+                "Invoice ID", "Total Quantity", "Total Cost", "Amount Paid", "Change", "Cashier", "Status", "Datetime"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, true, false, false, false, true, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane3.setViewportView(transactionsTBL);
+        jScrollPane3.setViewportView(invoicesTBL);
 
-        transactionsSearchBTN.setText("Search");
-        transactionsSearchBTN.addActionListener(new java.awt.event.ActionListener() {
+        invoicesSearchBTN.setText("Search");
+        invoicesSearchBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                transactionsSearchBTNActionPerformed(evt);
+                invoicesSearchBTNActionPerformed(evt);
             }
         });
 
@@ -316,9 +321,9 @@ public class AdminGUI extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(transactionsUsersCB, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(invoicesUsersCB, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(transactionsSearchBTN)
+                        .addComponent(invoicesSearchBTN)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -328,14 +333,14 @@ public class AdminGUI extends javax.swing.JFrame {
                 .addGap(12, 12, 12)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(transactionsSearchBTN)
-                    .addComponent(transactionsUsersCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(invoicesSearchBTN)
+                    .addComponent(invoicesUsersCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 622, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Transactions", jPanel2);
+        jTabbedPane1.addTab("Invoices", jPanel2);
 
         jLabel2.setText("Search product:");
 
@@ -668,9 +673,9 @@ public class AdminGUI extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void transactionsSearchBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transactionsSearchBTNActionPerformed
+    private void invoicesSearchBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_invoicesSearchBTNActionPerformed
         // TODO add your handling code here:
-        String username = transactionsUsersCB.getSelectedItem().toString();
+        String username = invoicesUsersCB.getSelectedItem().toString();
         //ArrayList<User> users = new ArrayList<User>();
         //users = userDAOImpl.search(username);
         //User user = users.get(0);
@@ -679,7 +684,7 @@ public class AdminGUI extends javax.swing.JFrame {
         int user_id = userDAOImpl.search(username).get(0).getUser_id();
         
         searchTransactionsTable(user_id);
-    }//GEN-LAST:event_transactionsSearchBTNActionPerformed
+    }//GEN-LAST:event_invoicesSearchBTNActionPerformed
 
     private void productsSearchBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productsSearchBTNActionPerformed
         // TODO add your handling code here:
@@ -1042,6 +1047,9 @@ public class AdminGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton homeRefreshBTN;
+    private javax.swing.JButton invoicesSearchBTN;
+    private javax.swing.JTable invoicesTBL;
+    private javax.swing.JComboBox<String> invoicesUsersCB;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1074,9 +1082,6 @@ public class AdminGUI extends javax.swing.JFrame {
     private javax.swing.JTextField productsSearchTF;
     private javax.swing.JTextField productsStockTF;
     private javax.swing.JTable productsTBL;
-    private javax.swing.JButton transactionsSearchBTN;
-    private javax.swing.JTable transactionsTBL;
-    private javax.swing.JComboBox<String> transactionsUsersCB;
     private javax.swing.JLabel userGreetingLBL;
     private javax.swing.JButton usersCancelBTN;
     private javax.swing.JMenuItem usersDeleteMI;

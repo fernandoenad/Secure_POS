@@ -15,7 +15,7 @@ import java.sql.*;
 public class InvoiceDAOImpl implements InvoiceDAO {
     public boolean create(Invoice invoice){
         String query = "INSERT INTO invoices(total_quantity, total_cost, amt_paid, `change`, user_id, status, `datetime`) "
-                + "VALUES(?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES(?, ?, ?, ?, ?, ?, NOW())";
         
         try(Connection conn = DBConnection.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(query)){
@@ -25,7 +25,6 @@ public class InvoiceDAOImpl implements InvoiceDAO {
             pstmt.setDouble(4, invoice.getChange());
             pstmt.setInt(5, invoice.getUser_id());
             pstmt.setString(6, invoice.getStatus());
-            pstmt.setString(7, invoice.getDatetime());
             pstmt.executeUpdate();
             
             return true;
@@ -63,9 +62,10 @@ public class InvoiceDAOImpl implements InvoiceDAO {
     
     public ArrayList<Invoice> read_all(){
         ArrayList<Invoice> invoices = new ArrayList<Invoice>();
-        String query = "SELECT * FROM invoices ORDER BY datetime DESC";
+        String query = "SELECT * FROM invoices WHERE status LIKE ? ORDER BY datetime DESC";
         try(Connection conn = DBConnection.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(query)){
+            pstmt.setString(1, "Completed");
             ResultSet rs = pstmt.executeQuery();
             while(rs.next()){
                 invoices.add(new Invoice(rs.getInt("invoice_id"), 
@@ -89,7 +89,7 @@ public class InvoiceDAOImpl implements InvoiceDAO {
     public boolean update(int invoice_id, Invoice invoice){
         String query = "UPDATE invoices SET total_quantity = ?, "
                 + "total_cost = ?, amt_paid = ?, `change` = ?, "
-                + "status = ?, `datetime` = ? WHERE invoice_id = ?";
+                + "status = ?, `datetime` = NOW() WHERE invoice_id = ?";
         try(Connection conn = DBConnection.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(query)){
             pstmt.setInt(1, invoice.getTotal_quantity());
@@ -97,8 +97,7 @@ public class InvoiceDAOImpl implements InvoiceDAO {
             pstmt.setDouble(3, invoice.getAmt_paid());
             pstmt.setDouble(4, invoice.getChange());
             pstmt.setString(5, invoice.getStatus());
-            pstmt.setString(6, invoice.getDatetime());
-            pstmt.setInt(7, invoice_id);
+            pstmt.setInt(6, invoice_id);
             pstmt.executeUpdate();
             
             return true;
@@ -111,10 +110,11 @@ public class InvoiceDAOImpl implements InvoiceDAO {
     
     public ArrayList<Invoice> readInvoicesByUser(int user_id){
         ArrayList<Invoice> invoices = new ArrayList<Invoice>();
-        String query = "SELECT * FROM invoices WHERE user_id = ? ORDER BY datetime DESC";
+        String query = "SELECT * FROM invoices WHERE user_id = ? AND status LIKE ? ORDER BY datetime DESC";
         try(Connection conn = DBConnection.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(query)){
-            pstmt.setInt(1, user_id);
+            pstmt.setString(1, "Completed");
+            pstmt.setInt(2, user_id);
             ResultSet rs = pstmt.executeQuery();
             while(rs.next()){
                 invoices.add(new Invoice(rs.getInt("invoice_id"), 
