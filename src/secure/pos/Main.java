@@ -35,6 +35,7 @@ public class Main extends javax.swing.JFrame {
         setTitle("FBE POS v1.0");
 
         cashierBTN.setFont(new java.awt.Font("Helvetica Neue", 0, 36)); // NOI18N
+        cashierBTN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/secure/pos/images/cashier.jpg"))); // NOI18N
         cashierBTN.setText("Cashier");
         cashierBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -43,6 +44,7 @@ public class Main extends javax.swing.JFrame {
         });
 
         administratorBTN.setFont(new java.awt.Font("Helvetica Neue", 0, 36)); // NOI18N
+        administratorBTN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/secure/pos/images/admin.png"))); // NOI18N
         administratorBTN.setText("Administrator");
         administratorBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -55,20 +57,20 @@ public class Main extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(85, 85, 85)
+                .addGap(61, 61, 61)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(administratorBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cashierBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(68, Short.MAX_VALUE))
+                    .addComponent(administratorBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cashierBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(80, 80, 80)
+                .addGap(63, 63, 63)
                 .addComponent(cashierBTN)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(administratorBTN)
-                .addContainerGap(97, Short.MAX_VALUE))
+                .addContainerGap(61, Short.MAX_VALUE))
         );
 
         pack();
